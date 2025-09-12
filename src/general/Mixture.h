@@ -98,7 +98,7 @@ public:
         Mutation::Thermodynamics::Composition::Type type =
             Mutation::Thermodynamics::Composition::MOLE) const;
 
-
+    friend class MutationAccesor;
 private:
 
     std::vector<Mutation::Thermodynamics::Composition> m_compositions;

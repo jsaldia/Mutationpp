@@ -33,7 +33,7 @@
 
 namespace Mutation {
     namespace Kinetics {
-
+class KineticsAccesor;
 class Reaction;
 
 /**
@@ -78,7 +78,7 @@ public:
     const std::vector<size_t>& irrReactions() const {
         return m_irr;
     }
-
+    friend class KineticsAccesor;
 private:
 
     /**

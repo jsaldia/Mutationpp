@@ -199,7 +199,7 @@ public:
      */
     //void getReactionDelta(
     //    const double* const p_s, double* const p_r) const;
-
+    friend class KineticsAccesor;
 
 private:
 
