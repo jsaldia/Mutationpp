@@ -94,6 +94,11 @@ public:
         const Thermodynamics::StateModel* const p_state, double* const p_lnk) = 0;
         
     /**
+     * Evaluates all of the rates derivatives wrt to control temperature in the group and stores in the given vector.
+     */
+    virtual void dlnkdT(
+        const Thermodynamics::StateModel* const p_state, double* const p_dlnkdT) = 0;        
+    /**
      * Computes \Delta G / RT for this rate law group and subtracts these values
      * for each of the reactions in this group.
      */
@@ -171,6 +176,21 @@ public:
         // Save this temperature
         m_last_t = m_t;
     }
+
+    virtual void dlnkdT(
+        const Thermodynamics::StateModel* const p_state,
+        double* const p_dlnkdT)
+    {
+        // Determine the reaction temperature for this group
+        m_t = TSelectorType().getT(p_state);
+        const double invT = 1.0 / m_t; 
+        for (int i = 0; i < m_rates.size(); ++i) {
+            const std::pair<size_t, RateLawType>& rate = m_rates[i];
+            p_dlnkdT[rate.first] = rate.second.dlnkdT(invT);
+        }        
+        // Save this temperature
+        m_last_t = m_t;
+    }    
 
 private:
 
@@ -258,6 +278,20 @@ public:
         for ( ; iter != m_group_map.end(); ++iter)
             iter->second->lnk(p_state, p_lnk);
     }
+
+    /**
+     *
+     */
+    void dlnkdT(
+        const Thermodynamics::StateModel* const p_state, double* const p_dlnkdT)
+    {
+        // Compute the forward rate derivative wrt temperature
+        GroupMap::iterator iter = m_group_map.begin();
+
+        for ( ; iter != m_group_map.end(); ++iter)
+            iter->second->dlnkdT(p_state, p_dlnkdT);
+    }
+
     
     /**
      * Subtracts ln(keq) from the provided rate coefficients.

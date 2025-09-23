@@ -78,6 +78,10 @@ public:
         return (k*invT*(m_n + m_temp*invT));
     }
 
+    inline double dlnkdT(const double invT) const {
+        return (invT*(m_n + m_temp*invT));
+    }
+
     double A() const { 
         return std::exp(m_lnA);
     }
