@@ -280,7 +280,7 @@ public:
             p_omega[m_transfer_models[i].first] +=
                 m_transfer_models[i].second->source();
     }
-    
+    friend class TTvTransferStateModelVisitor;
 protected:
     /**
     * @todo add a removeTransferTerm for the case wehen the
