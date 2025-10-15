@@ -60,6 +60,34 @@ public:
 
     /// Value of source term in J/m^3-s.
     virtual double source() = 0;
+    /**
+     * Fills the vector p_jac with the transfer jacobian vector
+     * \f[
+     * J_{i} = \frac{\partial \dot{\omega}}{\partial \rho_i}
+     * \f]
+     * The Jacobian vector should be sized to be at least the 
+     * number of species, ns.
+     *
+     * @param p_jac  - on return, the jacobian vector \f$J_{i}\f$
+     */
+    virtual void jacobianRho 	( 	double *const 	p_jac	) {
+        return;
+    };
+
+    /**
+     * Fills the vector p_jac with the transfer jacobian vector
+     * \f[
+     * J_{i} = \frac{\partial \dot{\omega}}{\partial T_s}
+     * \f]
+     * The Jacobian vector should be sized to be at least the 
+     * number of temperatures in the thermodynamic model.
+     *
+     * @param p_jac  - on return, the jacobian vector \f$J_{i}\f$
+     */
+    virtual void jacobianTemp 	( 	double *const 	p_jac	) {
+        return;
+    };
+
 
 protected:
     Mixture& mixture() { return m_mixture; }
