@@ -27,7 +27,7 @@
 # License along with Mutation++.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10...4.0)
 cmake_policy(SET CMP0048 NEW)
 set(CMAKE_CXX_STANDARD 14)
 
@@ -51,7 +51,6 @@ endif()
 #######################################################################
 
 if (SKBUILD)
-    add_subdirectory(thirdparty/pybind11)
     add_subdirectory(interface/python)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 endif()
@@ -217,7 +216,6 @@ option(ENABLE_COVERAGE "Generate coverage for codecov.io" OFF)
 list(APPEND LCOV_REMOVE_PATTERNS
     "'/usr/*'"
     "'*/tests/*'"
-    "'*/install/*'"
     "'*/examples/*'"
     "'*/thirdparty/*'"
 )
