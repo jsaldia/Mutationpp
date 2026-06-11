@@ -75,6 +75,12 @@ public:
 
 //==============================================================================
     /**
+     *  Function which returns the surface emissivity.
+     */
+    double surfaceEmissivity();
+
+//==============================================================================
+    /**
      *  Function which takes the incoming radiative heat from the gas .
      */
     void gasRadiativeHeatFlux(const double& gas_rad_heat_flux){

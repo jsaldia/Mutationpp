@@ -195,6 +195,30 @@ public:
 
 //==============================================================================
 
+    /**
+     * Purely virtual function returning the net radiative heat flux.
+     */
+    virtual double radiativeHeatFlux()
+    {
+        throw LogicError()
+        << "radiativeHeatFlux can be called only when solving "
+        << "the surface energy balance!";
+    }
+
+//==============================================================================
+
+    /**
+     * Purely virtual function returning the surface emissivity.
+     */
+    virtual double surfaceEmissivity()
+    {
+        throw LogicError()
+        << "emissivity can be called only when solving "
+        << "the surface energy balance!";
+    }
+
+//==============================================================================
+
 };
 
     } // namespace GasSurfaceInteraction

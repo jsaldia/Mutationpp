@@ -72,5 +72,12 @@ double SurfaceRadiation::surfaceNetRadiativeHeatFlux()
     return m_eps * (Mutation::SB * std::pow(T_surf, 4.0) - m_gas_rad_heat_flux);
 }
 
+//==============================================================================
+
+double SurfaceRadiation::surfaceEmissivity()
+{
+    return m_eps;
+}
+
     } // namespace GasSurfaceInteraction
 } // namespace Mutation

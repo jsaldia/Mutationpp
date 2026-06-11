@@ -179,6 +179,20 @@ public:
      */
     void getMassBlowingRate(double& mdot);
 
+    /**
+     * Function which returns the total radiative flux.
+     *
+     * @param qrad on return radiative heat flux W/m^2
+     */
+    void getRadiativeHeatFlux(double& qrad);
+
+    /**
+     * Function which returns the surface emissivity.
+     *
+     * @param eps on return surface emissivity
+     */
+    void getSurfaceEmissivity(double& eps);
+
 private:
     /**
      * Error function; wrong type of Gas Surface Interaction input file.

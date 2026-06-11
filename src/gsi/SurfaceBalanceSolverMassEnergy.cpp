@@ -241,6 +241,24 @@ public:
 
 //==============================================================================
 
+    double radiativeHeatFlux()
+    {
+        if (mp_surf_rad != NULL)
+            return mp_surf_rad->surfaceNetRadiativeHeatFlux();
+        return 0.;
+    }
+
+//==============================================================================
+
+    double surfaceEmissivity()
+    {
+        if (mp_surf_rad != NULL)
+            return mp_surf_rad->surfaceEmissivity();
+        return 0.;
+    }
+
+//==============================================================================
+
     void updateFunction(Eigen::VectorXd& v_X)
     {
         applyTolerance(v_X);
