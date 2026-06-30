@@ -1090,15 +1090,27 @@ void Thermodynamics::elementFractions(
 //==============================================================================
 
 void Thermodynamics::surfaceMassBalance(
-    const double *const p_Yke, const double *const p_Ykg, const double T, 
-    const double P, const double Bg, double &Bc, double &hw, double *const p_Xs)
+    const double *const p_Yke, const double *const p_Ykg,
+    const double T, const double P, const double Bg, double &Bc, double &hw,
+    double *const p_Xs, const double *const p_Ykc)
 {
     const int ne = nElements();
     const int ng = nGas();
     
     double p_Xw [ne];
-    double* p_X  = (p_Xs != NULL ? p_Xs : mp_work1);
+    double* p_X  = (p_Xs != nullptr ? p_Xs : mp_work1);
     double* p_h  = mp_work2;
+    
+    const double *p_Ykc_to_use = p_Ykc;
+    std::vector<double> default_Ykc(ne);
+    if (p_Ykc == nullptr) {
+        for (int i = 0; i < ne; ++i) {
+            default_Ykc[i] = 0.0;
+        }    
+        int ic = elementIndex("C");
+        default_Ykc[ic] = 1.0;
+        p_Ykc_to_use = default_Ykc.data();
+    }
     
     // Initialize the wall element fractions to be the pyrolysis gas fractions
     double sum = 0.0;
@@ -1107,12 +1119,16 @@ void Thermodynamics::surfaceMassBalance(
         sum += p_Xw[i];
     }
     
-    // Use "large" amount of carbon to simulate infinite char
-    int ic = elementIndex("C");
-    //double carbon = std::min(1000.0, std::max(100.0,1000.0*Bg));
-    double carbon = std::max(100.0*Bg, 200.0);
-    p_Xw[ic] += carbon;
-    sum += carbon;
+    // Use "large" amount of condensed phase to simulate infinite surface
+    const double LargeNumber = 100.0; 
+    std::vector<int> condensedPhaseElements;
+    const double tol = 1.0e-16;
+    for (int i = 0; i < ne; ++i) {
+        p_Xw[i] += LargeNumber*p_Ykc_to_use[i];
+        sum += LargeNumber*p_Ykc_to_use[i];
+        if (abs(p_Ykc_to_use[i]) > tol)
+            condensedPhaseElements.push_back(i);
+    }
     
     for (int i = 0; i < ne; ++i)
         p_Xw[i] /= sum;
@@ -1123,22 +1139,35 @@ void Thermodynamics::surfaceMassBalance(
     
     // Compute the gas mass fractions at the wall
     double mwg = 0.0;
-    double ywc = 0.0;
+    double p_Yw[ne];
+    for (int i = 0; i < ne; ++i) {
+        p_Yw[i] = 0.0;
+    }
     
     for (int j = 0; j < ng; ++j) {
         mwg += speciesMw(j) * p_X[j];
-        ywc += elementMatrix()(j,ic) * p_X[j];
-        //for (int i = 0; i < ne; ++i)
-        //    p_Yw[i] += elementMatrix()(j,i) * p_X[j];
+        for (int i = 0; i < ne; ++i)
+            p_Yw[i] += elementMatrix()(j,i) * p_X[j];
     }
     
-    //for (int i = 0; i < ne; ++i)
-    //    p_Yw[i] *= atomicMass(i) / mwg;
-    ywc *= atomicMass(ic) / mwg;
+    for (int i = 0; i < ne; ++i)
+        p_Yw[i] *= atomicMass(i) / mwg;
+
+    double sum_Ye = 0.0;
+    double sum_Yg = 0.0;
+    double sum_Yw = 0.0;
+    double sum_YCp = 1.0;  //Assumed equal to one
+    int ncp = condensedPhaseElements.size();
+    for (int i=0; i < ncp; ++i ) {
+        int idx_cp = condensedPhaseElements[i];
+        sum_Ye += p_Yke[idx_cp];
+        sum_Yg += p_Ykg[idx_cp];
+        sum_Yw += p_Yw[idx_cp];
+    }    
     
     // Compute char mass blowing rate
-    Bc = (p_Yke[ic] + Bg*p_Ykg[ic] - ywc*(1.0 + Bg)) / (ywc - 1.0);
-    Bc = std::max(Bc, 0.0);
+    Bc = (Bg*(sum_Yg - sum_Yw) + sum_Ye - sum_Yw)/(sum_Yw - sum_YCp);
+    Bc = std::max(Bc, 1.0e-15);
     
     // Compute the gas enthalpy
     speciesHOverRT(T, p_h);

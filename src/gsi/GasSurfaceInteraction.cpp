@@ -210,6 +210,20 @@ void GasSurfaceInteraction::setIterationsSurfaceBalance(const int& iter)
 
 //==============================================================================
 
+void GasSurfaceInteraction::setWriteConvergenceSurfaceBalance(const bool flag)
+{
+    mp_surf->setWriteConvergenceSurfaceBalance(flag);
+}
+
+//==============================================================================
+
+void GasSurfaceInteraction::setConvergenceToleranceSurfaceBalance(const double& tol)
+{
+    mp_surf->setConvergenceToleranceSurfaceBalance(tol);
+}
+
+//==============================================================================
+
 void GasSurfaceInteraction::getMassBlowingRate(double& mdot){
     mdot = mp_surf->massBlowingRate();
 }

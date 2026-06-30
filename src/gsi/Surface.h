@@ -188,6 +188,32 @@ public:
 //==============================================================================
 
     /**
+     * Purely virtual function to be called to set the flag to output
+     * convergence history for the Newton solver.
+     */
+    virtual void setWriteConvergenceSurfaceBalance(const bool flag)
+    {
+        throw LogicError()
+        << "setWriteConvergenceSurfaceBalance can be called only when solving "
+        << "the surface energy balance!";
+    }
+
+//==============================================================================
+
+    /**
+     * Purely virtual function to be called to set the tolerance
+     * parameter for the Newton solver.
+     */
+    virtual void setConvergenceToleranceSurfaceBalance(const double& tol)
+    {
+        throw LogicError()
+        << "setConvergenceToleranceSurfaceBalance can be called only when solving "
+        << "the surface energy balance!";
+    }
+
+//==============================================================================
+
+    /**
      * Purely virtual function returning the total mass blowing flux
      * due to surface and bulk phase processes.
      */

@@ -74,7 +74,7 @@ program main
     do i = 1,295
         T = dble(i-1)*50.0 + 300.0
         
-        call mpp_set_state(T, P, var)
+        call mpp_set_state(P, T, var)
         call mpp_x(species_x)
             
         write(*,'(E12.4)',advance='no') T

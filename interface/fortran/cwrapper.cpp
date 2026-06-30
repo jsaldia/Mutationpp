@@ -456,6 +456,15 @@ void NAME_MANGLE(surface_mass_balance)
 }
 
 //==============================================================================
+void NAME_MANGLE(surface_mass_balance_general)
+    (const double *const p_Yke, const double *const p_Ykg,  const double *const p_Ykc,
+     const double* const T, const double* const P, const double* const Bg,
+     double* const Bc, double* const hw, double *const p_Xs)
+{
+    p_mix->surfaceMassBalance(p_Yke, p_Ykg, *T, *P, *Bg, *Bc, *hw, p_Xs, p_Ykc);
+}
+
+//==============================================================================
 void NAME_MANGLE(get_composition)
     (F_STRING mixture, double* const p_Yk, F_STRLEN mixture_length)
 {
@@ -479,6 +488,26 @@ void NAME_MANGLE(gasmixture_surface_mass_balance)
     p_mix->getComposition(char_to_string(pyro, pyro_length), Ykg.data(), Composition::MASS);
 
     p_mix->surfaceMassBalance(Yke.data(), Ykg.data(), *T, *P, *Bg, *Bc, *hw, p_Xs);
+}
+
+//==============================================================================
+void NAME_MANGLE(gasmixture_surface_mass_balance_general)
+    (F_STRING edge, F_STRING pyro, F_STRING surf,
+     const double* const T, const double* const P, const double* const Bg,
+     double* const Bc, double* const hw, double *const p_Xs,
+     F_STRLEN edge_length, F_STRLEN pyro_length, F_STRLEN surf_length)
+{
+    const int ne = p_mix->nElements();
+
+    std::vector<double> Yke (ne,0);
+    std::vector<double> Ykg (ne,0);
+    std::vector<double> Ykc (ne,0);
+
+    p_mix->getComposition(char_to_string(edge, edge_length), Yke.data(), Composition::MASS);
+    p_mix->getComposition(char_to_string(pyro, pyro_length), Ykg.data(), Composition::MASS);
+    p_mix->getComposition(char_to_string(surf, surf_length), Ykc.data(), Composition::MASS);
+
+    p_mix->surfaceMassBalance(Yke.data(), Ykg.data(), *T, *P, *Bg, *Bc, *hw, p_Xs, Ykc.data());
 }
 
 //==============================================================================

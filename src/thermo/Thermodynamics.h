@@ -880,11 +880,13 @@ public:
      * @param hw On return, enthalpy of the mixed gas at the surface in J/kg.
      * @param p_Xs (optional) On return, vector of species mole fractions at
      * the surface.
+     * @param p_Ykc (optional) Element mass fractions of the condensed phase.
+     * If not value is passed, a carbon surface is assumed.
      */
     void surfaceMassBalance(
-        const double *const p_Yke, const double *const p_Ykg, const double T, 
-        const double P, const double Bg, double &Bc, double &hw,
-        double *const p_Xs = NULL);
+        const double *const p_Yke, const double *const p_Ykg,
+        const double T, const double P, const double Bg, double &Bc, double &hw,
+        double *const p_Xs = nullptr, const double *const p_Ykc = nullptr);
     
 private:
 
